@@ -1,0 +1,30 @@
+# noinspection
+
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.4"
+    import: ["@key", "@tag"]
+  )
+
+type Query {
+  """
+  Get the current user from our fake "auth" headers
+  Set the "x-user-id" header to the user id.
+  """
+  user: User
+}
+
+"""
+An user account in our system
+"""
+type User @key(fields: "id") {
+  id: ID!
+
+  """
+  The users login username
+  """
+  username: String!
+
+  "Internal Account Id associated with the given User"
+  accountId: Int @tag(name: "internal")
+}

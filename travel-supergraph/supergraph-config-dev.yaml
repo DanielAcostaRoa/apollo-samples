@@ -1,0 +1,22 @@
+federation_version: =2.3.2
+subgraphs:
+  flights:
+    routing_url: http://localhost:4001/flights/graphql
+    schema:
+      file: ./subgraphs/flights/schema.graphql
+  hotels:
+    routing_url: http://localhost:4001/hotels/graphql
+    schema:
+      file: ./subgraphs/hotels/schema.graphql
+  suggestions:
+    routing_url: http://localhost:4001/suggestions/graphql
+    schema:
+      file: ./subgraphs/suggestions/schema.graphql
+  trips:
+    routing_url: http://localhost:4001/trips/graphql
+    schema:
+      file: ./subgraphs/trips/schema.graphql
+  users:
+    routing_url: http://localhost:4001/users/graphql
+    schema:
+      file: ./subgraphs/users/schema.graphql

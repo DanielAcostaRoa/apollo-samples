@@ -1,0 +1,23 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key" "@shareable"])
+
+type Query {
+  allFlights: [Flight]
+}
+
+type Flight @key(fields: "id") {
+  id: ID!
+  price: Price
+  origin: Airport
+  destination: Airport
+}
+
+type Airport {
+  airportCode: String!
+}
+
+type Price @shareable {
+  amount: Int
+  formatted: String
+  currency: String
+}

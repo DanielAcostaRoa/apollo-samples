@@ -1,0 +1,120 @@
+name: merge-to-main
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+  APOLLO_VCS_COMMIT: ${{ github.event.pull_request.head.sha }}
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+jobs:
+  deploy-monolith:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to fly
+        run: flyctl deploy --remote-only
+
+  subgraph-flights:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/latest | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Publish subgraph schema
+        working-directory: ./subgraphs/flights
+        run: |
+          rover subgraph publish apollo-travel-supergraph@prod \
+            --name flights \
+            --schema schema.graphql
+
+  subgraph-hotels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/latest | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Publish subgraph schema
+        working-directory: ./subgraphs/hotels
+        run: |
+          rover subgraph publish apollo-travel-supergraph@prod \
+            --name hotels \
+            --schema schema.graphql
+
+  subgraph-suggestions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/latest | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Publish subgraph schema
+        working-directory: ./subgraphs/suggestions
+        run: |
+          rover subgraph publish apollo-travel-supergraph@prod \
+            --name suggestions \
+            --schema schema.graphql
+
+  subgraph-trips:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/latest | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Publish subgraph schema
+        working-directory: ./subgraphs/trips
+        run: |
+          rover subgraph publish apollo-travel-supergraph@prod \
+            --name trips \
+            --schema schema.graphql
+
+  subgraph-users:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/latest | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Publish subgraph schema
+        working-directory: ./subgraphs/users
+        run: |
+          rover subgraph publish apollo-travel-supergraph@prod \
+            --name users \
+            --schema schema.graphql
+
+  publish-README:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/latest | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Publish README
+        run: rover readme publish apollo-travel-supergraph@prod --file README.md

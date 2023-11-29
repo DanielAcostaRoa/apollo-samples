@@ -1,0 +1,14 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key", "@tag"])
+
+type Query {
+  users: [User]
+  user: User
+}
+
+type User @key(fields: "id") {
+  id: ID!
+  name: String @tag(name: "internal")
+  email: String @tag(name: "internal")
+  phoneNumber: Int @tag(name: "internal")
+}

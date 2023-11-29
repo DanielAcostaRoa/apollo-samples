@@ -1,0 +1,19 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key", "@shareable"])
+
+type Query {
+  hotels: [Hotel]
+}
+
+type Hotel @key(fields: "id") {
+  id: ID!
+  name: String
+  reviewScore: Int
+  price: Price
+}
+
+type Price @shareable {
+  amount: Int
+  formatted: String
+  currency: String
+}

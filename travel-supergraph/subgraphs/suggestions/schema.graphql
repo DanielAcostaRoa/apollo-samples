@@ -1,0 +1,13 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
+
+type TripSuggestion @key(fields: "trip { id }") {
+  trip: Trip
+  suggestions: [Product]
+}
+
+union Product = Hotel | Flight
+
+type Hotel @key(fields: "id", resolvable: false) { id: ID! }
+type Flight @key(fields: "id", resolvable: false) { id: ID! }
+type Trip @key(fields: "id", resolvable: false) { id: ID! }

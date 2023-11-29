@@ -1,0 +1,5 @@
+subgraphs:
+  subgraph:
+    routing_url: http://subgraph:4001/
+    schema:
+      file: ../subgraph/schema.graphql

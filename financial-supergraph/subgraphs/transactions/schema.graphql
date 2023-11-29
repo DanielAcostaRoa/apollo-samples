@@ -1,0 +1,40 @@
+# noinspection GraphQLTypeRedefinition
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+type Transaction @key(fields: "id") {
+  id: ID!
+  amount: Int
+  description: String
+  account: BankAccount
+}
+
+type BankAccount @key(fields: "id") {
+  id: ID!
+  transactions: [Transaction]
+  balance: Int
+}
+
+type TransactionApproved {
+  message: String
+}
+
+type TransactionDeclined {
+  message: String
+}
+
+type InsufficientFundsError {
+  message: String
+}
+
+union TransactionResult = InsufficientFundsError | TransactionApproved | TransactionDeclined
+
+type Mutation {
+  debitFromAccount(account: ID!, amount: Int!): TransactionResult
+  creditToAccount(account: ID!, amount: Int!): TransactionResult
+  withdrawFromAccount(account: ID!, amount: Int!): TransactionResult
+  transferFundsBetweenAccounts(fromAccount: ID!, toAccount: ID!, amount: Int!): TransactionResult
+}

@@ -1,0 +1,37 @@
+services:
+  envoy:
+    image: envoyproxy/envoy-dev:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./envoy/opa:/var/lib/envoy
+
+  jwks:
+    build: ./jwks-service
+    ports:
+      - 4005:4005
+
+  opa-bundle-server:
+    image: nginx:latest
+    volumes:
+      - ./opa:/usr/share/nginx/html
+
+  opa:
+    image: openpolicyagent/opa:latest-envoy
+    environment:
+      - JWKS_ENDPOINT=http://jwks:4005/.well-known/jwks
+    volumes:
+      - ./opa/:/etc/config/
+    command: "run --server --config-file /etc/config/opa.yaml --set=decision_logs.console=true --log-format=json-pretty"
+    ports:
+      - 9191:9191
+
+  router:
+    image: ghcr.io/apollographql/router:v0.9.3
+    volumes:
+      - ./router:/dist/config
+    command: "--log debug --supergraph /dist/config/supergraph.graphql"
+
+  subgraph:
+    build: ./subgraph
